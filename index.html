@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Vue JS Intro</title>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <div class="hero is-fullheight is-info is-bold">
+        <div class="hero-body">
+        <div class="container">
+            <h1 class="title has-text-centered">Онлайн-заказ арбузов с грядки у фермера</h1>
+            <div class="box">
+
+                <!-- our signup form -->
+                <form id="signup-form" @submit.prevent="processForm">
+                    <!-- name -->
+                    <!-- <div class="field">
+                        <label class="label">Имя</label>
+                        <input 
+                            type="text" 
+                            class="input" 
+                            name="name"
+                            v-model="name">
+                    </div> -->
+                    
+                    <!-- email -->
+                    <!-- <div class="field">
+                        <label class="label">Email</label>
+                        <input 
+                            type="email" 
+                            class="input" 
+                            name="email" 
+                            v-model="email"
+                            @blur="validateEmail">
+
+                        <p class="help is-danger" v-if="errors.email">
+                            Please enter a valid email.
+                        </p>
+                    </div> -->
+                    <!-- выбрать ряд и место на грядке, с которого нужно сорвать арбуз;  -->
+                        <div class="field">
+                            <label class="label">Выберите ряд</label>
+                            <select v-model="row" name="row">
+                            <option disabled value="">Выберите</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                        </div>
+                        <div class="field">
+                            <label class="label">Выберите  место</label>
+                            <select v-model="column" name="column">
+                            <option disabled value="">Выберите</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                        </select>
+                        </div>
+
+                    <!-- проверить статус арбуза: неспелый, спелый, уже сорван; -->
+                    <div class="field">
+                        <input type="text" class="input" id="myText" value="status">
+                        <button class="button-check is-danger" onclick="checkStatus()">Проверить статус</button>
+                    </div>
+
+                    <!-- указать количество, от 1 до 3 штук; -->
+                    <div class="field">
+                        <label class="label">Указать количество</label>
+                        <select v-model="selected" name="selected">
+                        <option disabled value="">Выберите</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                    </div>
+                    
+                    <!-- указать адрес доставки и телефон заказчика; -->
+                    <div class="field">
+                        <label class="label">Адрес</label>
+                        <input 
+                            type="text" 
+                            class="input" 
+                            name="address"
+                            v-model="address">
+                    </div>
+                    <div class="field">
+                        <label class="label">Телефон</label>
+                        <input 
+                            type="text" 
+                            class="input" 
+                            name="tel"
+                            v-model="tel">
+                        <p class="help is-danger" v-if="errors.tel">
+                            Please enter a valid telephone number.
+                        </p>
+                    </div>
+
+                    <!-- выбрать дату и время доставки (не далее 9 дней от текущей даты) -->
+                    <div class="field">
+                        <label class="label">Выберите дату</label>
+                        <input type="date" id="myDate" name="datetime" v-model="date" min="2022-01-01" max="2023-01-01">
+                    </div>
+                    <div class="field">
+                        <label class="label">Выберите время</label>
+                        <input type="time" id="myTime" v-model="time" step="any" value="16:32:55">
+                    </div>
+
+                    <!-- – заказать опциональную услугу “Порезать дольками” -->
+                    <div class="field">
+                        <input type="checkbox" id="checkbox" v-model="pieces" name="pieces">
+                        <label class="label" for="checkbox">Порезать дольками </label>
+                    </div>
+                    
+ 
+                    <!-- submit button -->
+                    <div class="field has-text-right">
+                        
+                        <input type=button class="button is-danger" onClick="location.href='success.html'" value='Отправить'>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+        </div>
+
+        <!-- our script  -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+
+        <script>
+
+            // plain javascript
+            
+
+            // grab the things we need
+            // const signupForm = document.getElementById('signup-form');
+            // const nameInput = signupForm.querySelector('input[name=name');
+            // const emailInput = signupForm.querySelector('input[name=email');
+
+            // // listen for the submit event
+            // signupForm.addEventListener('submit', processSignupForm);
+            // function processSignupForm(e) {
+            //     e.preventDefault();
+
+            //     const name = nameInput.value;
+            //     const email = emailInput.value;
+
+            //     console.log({name, email});
+            //     alert('Processing!');
+            // }
+
+            // vue
+            var app = new Vue({
+                el: '#signup-form',
+                data: {
+                    row: '',
+                    column: '',
+                    selected: '',
+                    address:'',
+                    tel: '',
+                    date:'',
+                    time: '',
+                    pieces: '',
+                    errors: {
+                        tel: false
+                    }
+                },
+                methods: {
+                    processForm: function() {
+                        console.log({row: this.row, column: this.column, selected: this.selected, address: this.address, tel: this.tel, date: this.date, time: this.time, pieces: this.pieces});
+                        // alert('Processing');
+                    }
+                },
+                validateEmail: function() {
+                    const isValid = window.isValidEmail(this.email);
+
+                    console.log(isValid);
+                    this.errors.email = !isValid; 
+                },
+                validateTel: function() {
+                    const isValidTel = window.isValidEmail(this.tel);
+
+                    console.log(isValidTel);
+                    this.errors.tel = !isValidTel; 
+                }
+            });
+            
+            var today = new Date();
+            var day9 = new Date();  
+            var dd = today.getDate();
+            var d9 = today.getDate() + 9;
+            var mm = today.getMonth()+1; 
+            var m9 = today.getMonth()+1;
+            var yyyy = today.getFullYear();
+            if(dd<10){
+                dd='0'+dd
+            } 
+            if(mm<10){
+                mm='0'+mm
+            } 
+            today = yyyy + '-' + mm + '-' + dd;
+            console.log(today);
+            document.getElementById("myDate").setAttribute("min", today);
+
+            
+                if(d9 > 31 && (m9 == 1 || m9 == 3 || m9 == 5 || m9 == 7 || m9 == 8 || m9 == 10 || m9 == 12)) {
+                    d9 = d9 - 31;
+                    m9 = m9 + 1;
+                }
+                else if(d9 > 30 && (m9 == 4 || m9 == 6 || m9 == 9 || m9 == 11)) {
+                    d9 = d9 - 30;
+                    m9 = m9 + 1;
+                }
+                else if(d9 > 28 && m9 == 2) {
+                    d9 = d9 - 28;
+                    m9 = m9 + 1;
+                }
+                if (d9 < 10) {
+                    d9 = '0' + d9;
+                }
+                if(m9 < 10){
+                    m9 ='0' + m9;
+                } 
+
+            day9 = yyyy + '-' + m9 + '-' + d9;
+            console.log(day9);
+            document.getElementById("myDate").setAttribute("max", day9);
+
+            const d = new Date();
+            var hh = d.getHours();
+            var mm = d.getMinutes();
+            var ss = d.getSeconds();
+            if(hh < 10)  hh = '0' + hh;
+            if (mm < 10) mm = '0' + mm;
+            if(ss < 10) ss = '0' + ss;
+            
+            var time = hh + ':' + mm + ':' + ss;
+
+            console.log(time);
+            document.getElementById("myTime").setAttribute("value", time);
+
+
+            function isValidTel(tel) {
+                // var re = /^([+]?1[\s]?)?((?:[(](?:[2-9]1[02-9]|[2-9][02-8][0-9])[)][\s]?)|(?:(?:[2-9]1[02-9]|[2-9][02-8][0-9])[\s.-]?)){1}([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2}[\s.-]?){1}([0-9]{4}){1}$/;
+                var re = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+                if(tel.value.match(re)) {
+                    return re.test(tel);
+                }
+                else {
+                    alert("Not a valid Phone Number");
+                }
+            }
+
+            // неспелый, спелый, уже сорван
+            var items = [
+                ['спелый', 'неспелый', 'спелый', 'спелый', 'уже сорван', 'спелый'],
+                ['спелый', 'неспелый', 'спелый', 'спелый', 'уже сорван', 'спелый'],
+                ['спелый', 'неспелый', 'неспелый', 'неспелый', 'спелый', 'неспелый'],
+                ['уже сорван', 'уже сорван', 'уже сорван', 'спелый', 'уже сорван', 'спелый'],
+                ['спелый', 'спелый', 'спелый', 'неспелый', 'неспелый', 'неспелый']
+            ];
+
+            function checkStatus() {
+                row = app.row - 1;
+                column = app.column - 1;
+                console.log(items[row][column]);
+                document.getElementById("myText").value = items[row][column];
+            }
+
+
+        </script>
+
+    </body>
+</html>
